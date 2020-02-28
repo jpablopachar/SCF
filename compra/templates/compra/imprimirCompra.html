@@ -1,0 +1,106 @@
+<!doctype html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta http-equiv="X-UA-Compatible" content="ie=edge">
+  <title>Listado de compras</title>
+  <style>
+    @page {
+      size: letter;
+      margin: 1cm;
+    }
+
+    .table td .numero { text-align: center }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <div class="card">
+      <div class="card-header">
+        <h4>Sistema de compras SCF</h4>
+      </div>
+      <div class="list-group">
+        <p>Nr. Compra: {{ compra.id }}</p>
+      </div>
+      <table class="table">
+        <tbody>
+          <tr>
+            <td>Proveedor:</td>
+            <td>{{ compra.proveedor }}</td>
+            <td>Fecha Compra</td>
+            <td>{{ compra.fechaCompra | date:"d/m/Y" }}</td>
+          </tr>
+          <tr>
+            <td>Nr. Factura</td>
+            <td>{{ compra.numFactura }}</td>
+            <td>Fecha Factura</td>
+            <td>{{ compra.fechaCompra | date:"d/m/Y" }}</td>
+          </tr>
+          <tr>
+            <td>Observación:</td>
+            <td colspan="3">{{ compra.observacion }}</td>
+          </tr>
+        </tbody>
+      </table>
+      <hr>
+    </div>
+    <table class="table">
+      <thead>
+        <tr>
+          <th>Producto</th>
+          <th>Cantidad</th>
+          <th>Precio</th>
+          <th>Subtotal</th>
+          <th>Descuento</th>
+          <th>Total</th>
+        </tr>
+      </thead>
+      <tbody>
+        {% for detalleCompra in detalleCompras %}
+        <tr>
+          <td><span class="small">{{ detalleCompra.producto }}</span></td>
+          <td class="numero">{{ detalleCompra.cantidad }}</td>
+          <td class="numero">{{ detalleCompra.precio }}</td>
+          <td class="numero">{{ detalleCompra.subTotal }}</td>
+          <td class="numero">{{ detalleCompra.descuento }}</td>
+          <td class="numero">{{ detalleCompra.total }}</td>
+        </tr>
+        {% endfor %}
+        <tr>
+          <td></td>
+          <td></td>
+          <td></td>
+          <td></td>
+          <td></td>
+          <td></td>
+        </tr>
+        <tr>
+          <td></td>
+          <td></td>
+          <td></td>
+          <td></td>
+          <td><h4>Subtotal</h4></td>
+          <td class="numero"><h4>{{ compra.subtotal }}</h4></td>
+        </tr>
+        <tr>
+          <td></td>
+          <td></td>
+          <td></td>
+          <td></td>
+          <td><h4>Descuento</h4></td>
+          <td class="numero"><h4>{{ compra.descuento }}</h4></td>
+        </tr>
+        <tr>
+          <td></td>
+          <td></td>
+          <td></td>
+          <td></td>
+          <td><h4>Total</h4></td>
+          <td class="numero"><h4>{{ compra.total }}</h4></td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+</body>
+</html>

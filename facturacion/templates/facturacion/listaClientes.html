@@ -1,0 +1,79 @@
+{% extends 'base/base.html' %}
+{% block Content %}
+<div class="card shadow mb-4">
+  <div class="card-header py-3 d-flex flex-row align-items-center justify-content-between">
+    <h6 class="m-0 font-weight-bold text-primary">Listado de Clientes</h6>
+  </div>
+  <div class="card-body">
+    {% if not clientes %}
+    <div class="alert alert-info">No hay clientes</div>
+    {% endif %}
+    <div class="buttons-toolbar">
+      <a class="dropdown-item" onclick="return abrirModal('{% url 'facturacion:nuevoCliente' %}')" href="#"><i class="far fa-calendar-plus"></i> Nuevo</a>
+    </div>
+    <table id="table" data-toggle="table" data-pagination="true" data-search="true" data-show-columns="true" data-show-toggle="true" data-show-fullscreen="true" data-toolbar=".buttons-toolbar" data-locale="es-NI">
+      <thead>
+        <tr>
+          <th data-sortable="true" data-field="ïd">Id</th>
+          <th data-sortable="true" data-field="nombres">Nombres</th>
+          <th data-sortable="true" data-field="apellidos">Apellidos</th>
+          <th data-sortable="true" data-field="tipo">Tipo</th>
+          <th data-field="celular">Celular</th>
+          <th data-field="estado">Estado</th>
+          <th class="all">Acciones</th>
+        </tr>
+      </thead>
+      <tbody>
+        {% for cliente in clientes %}
+        <tr>
+          <td>{{ cliente.id }}</td>
+          <td>{{ cliente.nombres }}</td>
+          <td>{{ cliente.apellidos }}</td>
+          <td>{{ cliente.tipo }}</td>
+          <td>{{ cliente.celular }}</td>
+          <td>
+            <div onclick="inactivar({{cliente.id}})">
+              {% if cliente.estado %}
+              <i class="far fa-thumbs-up text-primary"></i>
+              {% else %}
+              <i class="far fa-thumbs-down text-danger"></i>
+              {% endif %}
+            </div>
+          </td>
+          <td>
+            <button class="btn btn-warning btn-circle" onclick="return abrirModal('{% url 'facturacion:editarCliente' cliente.id %}')"><i class="far fa-edit"></i></button>
+          </td>
+        </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+  </div>
+</div>
+{% endblock %}
+{% block javascript %}
+<script>
+  function inactivar(idCliente) {
+    let datos = {id:idCliente};
+    datos = JSON.stringify(datos);
+    const token = '{{csrf_token}}';
+
+    $.ajax({
+      headers: {"X-CSRFToken": token},
+      type: "POST",
+      url: '/facturacion/clientes/estadoCliente/' + idCliente,
+      data: datos,
+      success: function(res) {
+        if (res === 'Ok') {
+          location.reload(true);
+        } else {
+          mensaje('Error al intentar cambiar el estado del cliente');
+        }
+      },
+      error: function(jqXHR, textStatus, errorThrow) {
+        mensaje(errorThrow, 'red');
+        cerrarModal();
+      }
+    });
+  }
+</script>
+{% endblock %}

@@ -1,0 +1,55 @@
+{% extends 'base/base.html' %}
+{% block Content %}
+<div class="card shadow mb-4">
+  <div class="card-header py-3 d-flex flex-row align-items-center justify-content-between">
+    <h6 class="m-0 font-weight-bold text-primary">Listado de Proveedores</h6>
+    <div class="dropdown no-arrow">
+      <a class="dropdown-toggle" href="#" role="button" id="dropdownMenuLink" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+        <i class="fas fa-ellipsis-v fa-sm fa-fw text-gray-400"></i>
+      </a>
+      <div class="dropdown-menu dropdown-menu-right shadow animated--fade-in" aria-labelledby="dropdownMenuLink">
+        <div class="dropdown-header">Acciones:</div>
+        <a class="dropdown-item" href="#" onclick="return abrirModal('{% url 'compra:nuevoProveedor' %}')"><i class="far fa-calendar-plus"></i> Nuevo</a>
+      </div>
+    </div>
+  </div>
+  <div class="card-body">
+    {% if not proveedores %}
+    <div class="alert alert-info">No hay proveedores</div>
+    {% endif %}
+    <table class="table table-striped table-hover">
+      <thead>
+        <th>Descripción</th>
+        <th>Dirección</th>
+        <th>Contacto</th>
+        <th>Teléfono</th>
+        <th>Correo</th>
+        <th>Estado</th>
+        <th class="all">Acciones</th>
+      </thead>
+      <tbody>
+        {% for proveedor in proveedores %}
+        <tr>
+          <td>{{ proveedor.descripcion }}</td>
+          <td>{{ proveedor.direccion }}</td>
+          <td>{{ proveedor.contacto }}</td>
+          <td>{{ proveedor.telefono }}</td>
+          <td>{{ proveedor.correo }}</td>
+          <td>{{ proveedor.estado|yesno:"Activo,Inactivo" }}</td>
+          <td>
+            <button class="btn btn-warning btn-circle" onclick="return abrirModal('{% url 'compra:editarProveedor' proveedor.id %}')"><i class="far fa-edit"></i></button>
+            <button class="btn btn-danger btn-circle" onclick="return abrirModal('{% url 'compra:inactivarProveedor' proveedor.id %}')"><i class="far fa-thumbs-down"></i></button>
+          </td>
+        </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+  </div>
+</div>
+{% endblock %}
+{% block javascript %}
+<script>
+  $(document).ready(function() {
+    $('.table').DataTable()});
+</script>
+{% endblock %}

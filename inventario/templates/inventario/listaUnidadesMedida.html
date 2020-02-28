@@ -1,0 +1,55 @@
+{% extends 'base/base.html' %}
+{% block Content %}
+<div class="card shadow mb-4">
+  <div class="card-header py-3 d-flex flex-row align-items-center justify-content-between">
+    <h6 class="m-0 font-weight-bold text-primary">Listado de Unidades de medida</h6>
+    <div class="dropdown no-arrow">
+      <a class="dropdown-toggle" href="#" role="button" id="dropdownMenuLink" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+        <i class="fas fa-ellipsis-v fa-sm fa-fw text-gray-400"></i>
+      </a>
+      <div class="dropdown-menu dropdown-menu-right shadow animated--fade-in" aria-labelledby="dropdownMenuLink">
+        <div class="dropdown-header">Acciones:</div>
+        <a class="dropdown-item" href="{% url 'inventario:nuevaUnidadMedida' %}"><i class="far fa-calendar-plus"></i> Nueva</a>
+      </div>
+    </div>
+  </div>
+  <div class="card-body">
+    {% if not unidadesMedida %}
+    <div class="alert alert-info">No hay Unidades de medida</div>
+    {% else %}
+    <table class="table table-striped table-hover">
+      <thead>
+        <th>Id</th>
+        <th>Descripción</th>
+        <th>Estado</th>
+        <th>Fecha creación</th>
+        <th>Fecha modificación</th>
+        <th class="all">Acciones</th>
+      </thead>
+      <tbody>
+        {% for unidadMedida in unidadesMedida %}
+        <tr>
+          <td>{{ unidadMedida.id }}</td>
+          <td>{{ unidadMedida.descripcion }}</td>
+          <td>{{ unidadMedida.estado|yesno:"Activo,Inactivo" }}</td>
+          <td>{{ unidadMedida.fechaCreacion|date:"d/m/Y H:i:s" }}</td>
+          <td>{{ unidadMedida.fechaModificacion|date:"d/m/Y H:i:s" }}</td>
+          <td>
+            <a href="{% url 'inventario:editarUnidadMedida' unidadMedida.id %}" class="btn btn-warning btn-circle" role="button"><i class="far fa-edit"></i></a>
+            <a href="{% url 'inventario:inactivarUnidadMedida' unidadMedida.id %}" class="btn btn-danger btn-circle" role="button"><i class="far fa-thumbs-down"></i></a>
+          </td>
+        </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+    {% endif %}
+  </div>
+</div>
+{% endblock %}
+{% block javascript %}
+<script>
+  $(document).ready(function() {
+    $('.table').DataTable();
+  });
+</script>
+{% endblock %}

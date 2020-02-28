@@ -1,0 +1,55 @@
+{% extends 'base/base.html' %}
+{% block Content %}
+<div class="card shadow mb-4">
+  <div class="card-header py-3 d-flex flex-row align-items-center justify-content-between">
+    <h6 class="m-0 font-weight-bold text-primary">Listado de Categorías</h6>
+    <div class="dropdown no-arrow">
+      <a class="dropdown-toggle" href="#" role="button" id="dropdownMenuLink" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+        <i class="fas fa-ellipsis-v fa-sm fa-fw text-gray-400"></i>
+      </a>
+      <div class="dropdown-menu dropdown-menu-right shadow animated--fade-in" aria-labelledby="dropdownMenuLink">
+        <div class="dropdown-header">Acciones:</div>
+        <a class="dropdown-item" href="{% url 'inventario:nuevaCategoria' %}"><i class="far fa-calendar-plus"></i> Nueva</a>
+      </div>
+    </div>
+  </div>
+  <div class="card-body">
+    {% if not categorias %}
+    <div class="alert alert-info">No hay categorías</div>
+    {% else %}
+    <table class="table table-striped table-hover">
+      <thead>
+        <th>Id</th>
+        <th>Descripción</th>
+        <th>Estado</th>
+        <th>Fecha creación</th>
+        <th>Fecha modificación</th>
+        <th class="all">Acciones</th>
+      </thead>
+      <tbody>
+        {% for categoria in categorias %}
+        <tr>
+          <td>{{ categoria.id }}</td>
+          <td>{{ categoria.descripcion }}</td>
+          <td>{{ categoria.estado|yesno:"Activo,Inactivo" }}</td>
+          <td>{{ categoria.fechaCreacion|date:"d/m/Y H:i:s" }}</td>
+          <td>{{ categoria.fechaModificacion|date:"d/m/Y H:i:s" }}</td>
+          <td>
+            <a href="{% url 'inventario:editarCategoria' categoria.id %}" class="btn btn-warning btn-circle" role="button"><i class="far fa-edit"></i></a>
+            <a href="{% url 'inventario:eliminarCategoria' categoria.id %}" class="btn btn-danger btn-circle" role="button"><i class="far fa-trash-alt"></i></a>
+          </td>
+        </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+    {% endif %}
+  </div>
+</div>
+{% endblock %}
+{% block javascript %}
+<script>
+  $(document).ready(function() {
+    $('.table').DataTable();
+  });
+</script>
+{% endblock %}

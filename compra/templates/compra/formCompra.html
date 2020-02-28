@@ -1,0 +1,272 @@
+{% extends 'base/base.html' %}
+{% block Content %}
+<form method="post" id="formCompra">
+  {% csrf_token %}
+  <div class="col-xl-12 col-md-12 mb-12">
+    {% if compra %}
+    <div class="card border-left-warning shadow h-100 py-2">
+    {% else %}
+    <div class="card border-left-success shadow h-100 py-2">
+    {% endif %}
+      <div class="card-body">
+        <div class="row no-gutters align-items-center">
+          <div class="col mr-2">
+            <div class="text-xs font-weight-bold text-primary text-uppercase mb-1">
+              {% if compra %} Editar {% else %} Nueva {% endif %} Compra
+            </div>
+            <div class="dropdown-divider"></div>
+            <div class="row">
+              <div class="col-6">
+                <div class="form-group row">
+                  <label class="col-sm-2 col-form-label">Proveedor:</label>
+                  <div class="col-sm-10">{{ formCompra.proveedor }}</div>
+                </div>
+                <div class="row">
+                  <div class="col-6">
+                    <div class="form-group">
+                      <label>Fecha compra:</label> {{ formCompra.fechaCompra }}
+                    </div>
+                    <div class="form-group">
+                      <label>Descripción:</label> {{ formCompra.observacion }}
+                    </div>
+                  </div>
+                  <div class="col-6">
+                    <div class="form-group">
+                      <label>Nr. Factura:</label> {{ formCompra.numFactura }}
+                    </div>
+                    <div class="form-group">
+                      <label>Fecha factura:</label> {{ formCompra.fechaFactura }}
+                    </div>
+                    <div class="row">
+                      <div class="col">
+                        <label>Subtotal:</label>
+                      </div>
+                      <div class="col">{{ formCompra.subTotal }}</div>
+                    </div>
+                    <div class="row">
+                      <div class="col">
+                        <label>Descuento:</label>
+                      </div>
+                      <div class="col">{{ formCompra.descuento }}</div>
+                    </div>
+                    <div class="row">
+                      <div class="col">
+                        <label>Total:</label>
+                      </div>
+                      <div class="col">{{ formCompra.total }}</div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+              <div class="col-6">
+                <div class="row">
+                  <div class="col">
+                    <table class="table table-striped table-hover dt-responsive table-sm nowrap tabla-productos" style="width: 100%">
+                      <thead>
+                        <tr>
+                          <th>Id</th>
+                          <th class="all">Descripción</th>
+                          <th class="all">Acciones</th>
+                        </tr>
+                      </thead>
+                      <tbody>
+                        {% for producto in productos %}
+                        <tr>
+                          <td>{{ producto.id }}</td>
+                          <td>{{ producto.descripcion }}</td>
+                          <td>
+                            <button type="button" class="btn btn-warning btn-circle" onclick="seleccionarProducto({{producto.id}}, '{{producto.descripcion}}')"><i class="far fa-hand-pointer"></i></button>
+                          </td>
+                        </tr>
+                        {% endfor %}
+                      </tbody>
+                    </table>
+                  </div>
+                </div>
+                <div class="form-group row">
+                  <label class="col-sm-3 col-form-label">Producto</label>
+                  <div class="col-sm-2">
+                    <input type="text" readonly class="form-control-plaintext" id="id_idProducto" name="id_idProducto" value="" required>
+                  </div>
+                  <div class="col-sm-7">
+                    <input type="text" readonly class="form-control-plaintext" id="id_descripcionProducto" value="" required>
+                  </div>
+                </div>
+                <div class="form-group row">
+                  <label class="col-sm-2 col-form-label">Cantidad:</label>
+                  <div class="col-sm-2">
+                    <input type="number" class="form-control" name="id_cantidadDetalle" id="id_cantidadDetalle" value="00" required>
+                  </div>
+                  <label class="col-sm-2 col-form-label">Precio:</label>
+                  <div class="col-sm-2">
+                    <input type="number" class="form-control" id="id_precioDetalle" name="id_precioDetalle" value="00" required>
+                  </div>
+                  <label class="col-sm-2 col-form-label">Descuento:</label>
+                  <div class="col-sm-2">
+                    <input type="text" class="form-control" id="id_descuentoDetalle" name="id_descuentoDetalle" value="00">
+                  </div>
+                </div>
+                <div class="form-hroup row">
+                  <label class="col-sm-2 col-form-label">Subtotal:</label>
+                  <div class="col-sm-4">
+                    <input type="text" readonly class="form-control-plaintext" id="id_subtotalDetalle" name="id_subtotalDetalle" value="00">
+                  </div>
+                  <label class="col-sm-2 col-form-label">Total:</label>
+                  <div class="col-sm-3">
+                    <input type="text" class="form-control-plaintext col-sm-10" id="id_totalDetalle" name="id_totalDetalle" readonly value="00">
+                  </div>
+                  <div class="col-sm-1">
+                    <button type="button" class="btn btn-sm col-sm-2" onclick="limpiarDetalle();"><i class="fa fa-minus-circle" aria-hidden="true"></i></button>
+                  </div>
+                </div>
+                <div class="dropdown-divider"></div>
+                <div class="row">
+                  <div class="col">
+                    <button type="submit" class="btn btn-danger"><i class="fa fa-save"></i> Guardar</button>
+                    <a href="{% url 'compra:listaCompras' %}" class="btn btn-success"><i class="far fa-hand-point-left"></i> Cancelar</a>
+                  </div>
+                </div>
+              </div>
+            </div>
+            <div class="row">
+              <div class="col">
+                <table class="table table-striped table-hover dt-responsive nowrap" style="width: 100%">
+                  <thead>
+                    <tr>
+                      <th>Producto</th>
+                      <th>Cantidad</th>
+                      <th>Precio</th>
+                      <th>Subtotal</th>
+                      <th>Descuento</th>
+                      <th>Total</th>
+                      <th class="all">Acciones</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    {% for detalle in detalles %}
+                    <tr>
+                      <td>{{ detalle.producto }}</td>
+                      <td>{{ detalle.cantidad }}</td>
+                      <td>{{ detalle.precio }}</td>
+                      <td>{{ detalle.subTotal }}</td>
+                      <td>{{ detalle.descuento }}</td>
+                      <td>{{ detalle.total }}</td>
+                      <td>
+                        <button class="btn btn-danger btn-circle" onclick="return abrirModal('{% url 'compra:eliminarDetalleCompra' compra.pk detalle.id %}')"><i class="fas fa-trash-alt"></i></button>
+                      </td>
+                    </tr>
+                    {% endfor %}
+                  </tbody>
+                </table>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</form>
+{% endblock %}
+{% block javascript %}
+<script>
+  $(document).ready(function() {
+    $('#id_fechaCompra, #id_fechaFactura').datetimepicker({
+      format: 'Y-m-d',
+      timepicker: false
+    });
+    $('.table').DataTable({
+      "pageLength": 2,
+      "language": {
+        "sProcessing": "Procesando...",
+        "sLengthMenu": "Mostrar _MENU_ registros",
+        "sZeroRecords": "No se encontraron resultados",
+        "sEmptyTable": "Ningún dato disponible en esta tabla",
+        "sInfo": "Mostrando registros del _START_ al _END_ de un total de _TOTAL_ registros",
+        "sInfoEmpty": "Mostrando registros del 0 al 0 de un total de 0 registros",
+        "sInfoFiltered": "(filtrado de un total de _MAX_ registros)",
+        "sInfoPostFix": "",
+        "sSearch": "Buscar:",
+        "sUrl": "",
+        "sInfoThousands": ",",
+        "sLoadingRecords": "Cargando...",
+        "oPaginate": {
+            "sFirst": "<span class='fa fa-angle-double-left'></span>",
+            "sLast": "<span class='fa fa-angle-double-right'></span>",
+            "sNext": "<span class='fa fa-angle-right'></span>",
+            "sPrevious": "<span class='fa fa-angle-left'></span>"
+        },
+        "oAria": {
+            "sSortAscending": ": Activar para ordenar la columna de manera ascendente",
+            "sSortDescending": ": Activar para ordenar la columna de manera descendente"
+        }
+      }
+    });
+
+    $('#id_cantidadDetalle, #id_precioDetalle, #id_descuentoDetalle').change(function () {
+      calcularDetalle();
+    });
+
+    $('#formCompra').submit(function(e) {
+      if ($('#id_totalDetalle').val() == 0 || $('#id_idProducto').val() === 0) {
+        e.preventDefault();
+        $.alert({
+          type: 'red',
+          title: '',
+          content: 'No se ha agregado el producto o está sin cantidades'
+        });
+      }
+    });
+  });
+
+  function seleccionarProducto(id, descripcion) {
+    $('#id_cantidadDetalle').val(0);
+    $('#id_precioDetalle').val(0);
+    $('#id_descuentoDetalle').val(0);
+    $('#id_subtotalDetalle').val(0);
+    $('#id_totalDetalle').val(0);
+    $('#id_idProducto').val(+id);
+    $('#id_descripcionProducto').val(descripcion);
+    $('#id_cantidadDetalle').focus();
+    $('#id_cantidadDetalle').select();
+    $('.table').DataTable().search('').draw();
+  }
+
+  function calcularDetalle() {
+    let cantidad, precio, descuento, subtotal, total;
+
+    // Valida que no haya números negativos
+    cantidad = $('#id_cantidadDetalle').val();
+    cantidad = cantidad === '' ? 0 : +cantidad;
+    cantidad = cantidad < 0 ? 0 : cantidad;
+    precio = $('#id_precioDetalle').val();
+    precio = precio === '' ? 0 : precio;
+    precio = precio < 0 ? 0 : precio;
+    descuento = $('#id_descuentoDetalle').val();
+    descuento = descuento === '' ? 0 : +descuento;
+    descuento = descuento < 0 ? 0 : descuento;
+    descuento = descuento > (cantidad * precio) ? 0 : descuento;
+    subtotal = cantidad * precio;
+    total = subtotal - descuento;
+
+    $('#id_cantidadDetalle').val(cantidad);
+    $('#id_precioDetalle').val(precio);
+    $('#id_descuentoDetalle').val(descuento);
+    $('#id_subtotalDetalle').val(subtotal);
+    $('#id_totalDetalle').val(total);
+  }
+
+  function limpiarDetalle() {
+    $('#id_cantidadDetalle').val(0);
+    $('#id_precioDetalle').val(0);
+    $('#id_descuentoDetalle').val(0);
+    $('#id_subtotalDetalle').val(0);
+    $('#id_totalDetalle').val(0);
+    $('#id_idProducto').val('');
+    $('#id_descripcionProducto').val('');
+    $('.table').DataTable().search('').draw();
+    $('#id_proveedor').focus();
+  }
+
+  $('#id_proveedor').focus();
+</script>
+{% endblock %}

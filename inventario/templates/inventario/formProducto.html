@@ -1,0 +1,40 @@
+<div class="modal-dialog modal-lg">
+  <div class="modal-content">
+    {% if producto %}
+    <form method="POST" role="form" class="form-inline" action="{% url 'inventario:editarProducto' producto.pk %}">
+    {% else %}
+    <form method="POST" role="form" class="form-inline" action="{% url 'inventario:nuevoProducto' %}">
+    {% endif %}
+      {% csrf_token %}
+      <div class="col-xl-12 col-md-12 mb-12">
+        {% if producto %}
+        <div class="card border-left-warning shadow h-100 py-2">
+        {% else %}
+        <div class="card border-left-success shadow h-100 py-2">
+        {% endif %}
+          <div class="card-body">
+            <div class="row no-gutters align-items-center">
+              <div class="col mr-2">
+                <div class="text-xs font-weight-bold text-success text-uppercase mb-1">{% if producto %} Editar {% else %} Nuevo {% endif %} Producto</div>
+                <div class="dropdown-divider"></div>
+                {% csrf_token %}
+                <div class="row">
+                  {{ form.as_p }}
+                </div>
+                <div class="dropdown-divider"></div>
+                <div class="row">
+                  <div class="col">
+                    <button type="submit" class="btn btn-danger"><span class="fa fa-save"></span> Guardar</button>
+                    <button type="submit" class="btn btn-success" onclick="cerrarModal()"><span class="fa fa-undo"></span> Cancelar</button>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+        </div>
+      </div>
+    </form>
+    </form>
+  </div>
+</div>

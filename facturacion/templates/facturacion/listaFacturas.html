@@ -1,0 +1,40 @@
+{% extends 'base/base.html' %}
+{% block Content %}
+<div class="card shadow mb-4">
+  <div class="card-header py-3 d-flex flex-row align-items-center justify-content-between">
+    <h6 class="m-0 font-weight-bold text-primary">Listado de Facturas</h6>
+  </div>
+  <div class="card-body">
+    {% if not facturas %}
+    <div class="alert alert-info">No hay facturas</div>
+    {% endif %}
+    <div class="buttons-toolbar">
+      <a class="btn btn-success" href="{% url 'facturacion:nuevaFactura' %}"><i class="far fa-calendar-plus"></i> Nuevo</a>
+    </div>
+    <table id="table" data-toggle="table" data-pagination="true" data-search="true" data-show-columns="true" data-show-toggle="true" data-show-fullscreen="true" data-toolbar=".buttons-toolbar" data-locale="es-NI">
+      <thead>
+        <tr>
+          <th data-sortable="true" data-field="ïd">Nr.</th>
+          <th data-sortable="true" data-field="cliente">Cliente</th>
+          <th data-sortable="true" data-field="total">Total</th>
+          <th data-field="estado">Estado</th>
+          <th class="all">Acciones</th>
+        </tr>
+      </thead>
+      <tbody>
+        {% for factura in facturas %}
+        <tr>
+          <td>{{ factura.id }}</td>
+          <td>{{ factura.cliente }}</td>
+          <td>{{ factura.total }}</td>
+          <td>{{ factura.estado|yesno:"Activo,Inactivo" }}</td>
+          <td><a href="{% url 'facturacion:editarFactura' factura.id %}" class="btn btn-warning btn-circle"><i class="far fa-edit"></i></a></td>
+        </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+  </div>
+</div>
+{% endblock %}
+{% block javascript %}
+{% endblock %}

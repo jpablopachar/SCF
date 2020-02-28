@@ -1,0 +1,49 @@
+{% extends 'base/base.html' %}
+{% block Content %}
+<form method="POST" class="form-inline">
+  {% csrf_token %}
+  <div class="col-xl-12 col-md-12 mb-12">
+    {% if subcategoria %}
+    <div class="card border-left-warning shadow h-100 py-2">
+    {% else %}
+      <div class="card border-left-success shadow h-100 py-2">
+    {% endif %}
+      <div class="card-body">
+        <div class="row no-gutters align-items-center">
+          <div class="col mr-2">
+            <div class="text-xs font-weight-bold text-success text-uppercase mb-1">{% if subcategoria %} Editar {% else %} Nueva {% endif %} Subcategoría</div>
+            <div class="dropdown-divider"></div>
+            <div class="row">
+              <div class="col-5">
+                <div class="input-group">
+                  {{ form.categoria }}
+                </div>
+              </div>
+              <div class="col-5">
+                <div class="input-group">
+                  <input type="text" name="descripcion" maxlength="100" id="descripcion" class="form-control" placeholder="Descripción" value="{% if subcategoria %} {{ subcategoria.descripcion }} {% endif %}" required>
+                </div>
+              </div>
+              <div class="col-2">
+                <div class="form-group">
+                  <label for="estado" class="mr-2">Estado</label>
+                  <input type="checkbox" name="estado" class="form-control" id="estado" {% if categoria.estado %} checked {% endif %}>
+                </div>
+              </div>
+            </div>
+            <div class="dropdown-divider"></div>
+            <div class="row">
+              <div class="col">
+                <button type="submit" class="btn btn-danger"><span class="fa fa-save"></span> Guardar</button>
+                <a href="{% url 'inventario:listaSubcategorias' %}" class="btn btn-success"><span class="fa fa-undo"></span> Cancelar</a>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+      </div>
+    </div>
+  </div>
+</form>
+{% endblock %}
+{% block javascript %}{% endblock %}
