@@ -19,7 +19,75 @@
                 <div class="dropdown-divider"></div>
                 {% csrf_token %}
                 <div class="row">
-                  {{ form.as_p }}
+                  {#{ form.as_p }#}
+                </div>
+                <div class="row">
+                  <div class="col-md-6">
+                    <div class="col-md-6">{{ form.codigo.label }}</div>
+                    <div class="col-md-6">{{ form.codigo }}</div>
+                  </div>
+                  <div class="col-md-6">
+                    <div class="col-md-6">{{ form.codigoBarra.label }}</div>
+                    <div class="col-md-6">{{ form.codigoBarra }}</div>
+                  </div>
+                </div>
+                <div class="row">
+                  <div class="col-md-6">
+                    <div class="col-md-6">{{ form.descripcion.label }}</div>
+                    <div class="col-md-6">{{ form.descripcion }}</div>
+                  </div>
+                  <div class="col-md-6">
+                    <div class="col-md-6">{{ form.estado.label }}</div>
+                    <div class="col-md-6">{{ form.estado }}</div>
+                  </div>
+                </div>
+                <div class="row">
+                  <div class="col-md-6">
+                    <div class="col-md-6">{{ form.precio.label }}</div>
+                    <div class="col-md-6">{{ form.precio }}</div>
+                  </div>
+                  <div class="col-md-6">
+                    <div class="col-md-6">{{ form.existencia.label }}</div>
+                    <div class="col-md-6">{{ form.existencia }}</div>
+                  </div>
+                </div>
+                <div class="row">
+                  <div class="col-md-4">
+                    <div class="col-md-6">{{ form.ultimaCompra.label }}</div>
+                    <div class="col-md-6">{{ form.ultimaCompra }}</div>
+                  </div>
+                  <div class="col-md-4">
+                    <div class="col-md-6">{{ form.marca.label }}</div>
+                    <div class="col-md-6">{{ form.marca }}</div>
+                  </div>
+                  <div class="col-md-4">
+                    <div class="col-md-6">{{ form.unidadMedida.label }}</div>
+                    <div class="col-md-6">{{ form.unidadMedida }}</div>
+                  </div>
+                </div>
+                <div class="row">
+                  <div class="col-md-6">
+                    <div class="col-md-6">Categoría</div>
+                    <div class="col-md-6">
+                      <select name="categoria" id="idCategoria" class="form-control form-control-sm">
+                        <option value="0">-----</option>
+                        {% for categoria in categorias %}
+                        <option value="{{categoria.id}}">{{categoria.descripcion}}</option>
+                        {% endfor %}
+                      </select>
+                    </div>
+                  </div>
+                  <div class="col-md-6">
+                    <div class="col-md-6">Sub categoría</div>
+                    <div class="col-md-6">
+                      <select name="subcategoria" id="idSubcategoria" class="form-control form-control-sm">
+                        <option value="0">-----</option>
+                        {% for subcategoria in subcategorias %}
+                        <option value="{{subcategoria.id}}" data-chained="{{subcategoria.categoria.id}}">{{subcategoria.descripcion}}</option>
+                        {% endfor %}
+                      </select>
+                    </div>
+                  </div>
                 </div>
                 <div class="dropdown-divider"></div>
                 <div class="row">
@@ -38,3 +106,10 @@
     </form>
   </div>
 </div>
+<script>
+  $(function() {
+    $('#idCategoria').val("{{ producto.subcategoria.categoria.id }}").change();
+    $('#idSubcategoria').val("{{ producto.subcategoria.id }}").change();
+    $('#idSubcategoria').chained('#idCategoria');
+  });
+</script>

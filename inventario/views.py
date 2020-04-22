@@ -2,11 +2,11 @@ from django.shortcuts import render, redirect
 from django.contrib.auth.decorators import login_required, permission_required
 from django.contrib.messages.views import SuccessMessageMixin
 from django.contrib import messages
-from .models import Categoria, SubCategoria, Marca, UnidadMedida, Producto
-from .forms import CategoriaForm, SubcategoriaForm, MarcaForm, UnidadMedidaForm, ProductoForm
 from django.views import generic
 from django.urls import reverse_lazy
 from bases.views import SinPrivilegios
+from .models import Categoria, SubCategoria, Marca, UnidadMedida, Producto
+from .forms import CategoriaForm, SubcategoriaForm, MarcaForm, UnidadMedidaForm, ProductoForm
 
 
 class listarCategorias(SinPrivilegios, generic.ListView):
@@ -118,6 +118,13 @@ class nuevoProducto(SuccessMessageMixin, SinPrivilegios, generic.CreateView):
 
         return super().form_valid(form)
 
+    def get_context_data(self, **kwargs):
+        context = super(nuevoProducto, self).get_context_data(**kwargs)
+        context["categorias"] = Categoria.objects.all()
+        context["subcategorias"] = SubCategoria.objects.all()
+
+        return context
+
 
 class editarCategoria(SuccessMessageMixin, SinPrivilegios, generic.UpdateView):
     model = Categoria
@@ -193,6 +200,15 @@ class editarProducto(SuccessMessageMixin, SinPrivilegios, generic.UpdateView):
 
         return super().form_valid(form)
 
+    def get_context_data(self, **kwargs):
+        pk = self.kwargs.get('pk')
+        context = super(editarProducto, self).get_context_data(**kwargs)
+        context["categorias"] = Categoria.objects.all()
+        context["subcategorias"] = SubCategoria.objects.all()
+        context["producto"] = Producto.objects.filter(pk=pk).first()
+
+        return context
+
 
 class eliminarCategoria(SuccessMessageMixin, SinPrivilegios, generic.DeleteView):
     model = Categoria
@@ -218,21 +234,21 @@ def inactivarMarca(request, id):
     marca = Marca.objects.filter(pk=id).first()
     contexto = {}
     template_name = "inventario/eliminarCatalogo.html"
-    
+
     if not marca:
         return redirect("inventario:listaMarcas")
-    
+
     if request.method == 'GET':
         contexto = {'obj': marca}
-    
+
     if request.method == 'POST':
         marca.estado = False
 
         marca.save()
         messages.success(request, 'Marca inactivada')
-        
+
         return redirect("inventario:listaMarcas")
-    
+
     return render(request, template_name, contexto)
 
 
