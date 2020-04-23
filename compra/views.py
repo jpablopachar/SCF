@@ -31,6 +31,7 @@ class nuevoProveedor(SuccessMessageMixin, SinPrivilegios, generic.CreateView):
     model = Proveedor
     template_name = "compra/formProveedor.html"
     context_object_name = "proveedor"
+    permission_required = "compra.add_proveedor"
     form_class = ProveedorForm
     success_url = reverse_lazy("compra:listaProveedores")
 
@@ -135,6 +136,7 @@ class editarProveedor(SuccessMessageMixin, SinPrivilegios, generic.UpdateView):
     model = Proveedor
     template_name = "compra/formProveedor.html"
     context_object_name = "proveedor"
+    permission_required = "compra.change_proveedor"
     form_class = ProveedorForm
     success_url = reverse_lazy("compra:listaProveedores")
 
